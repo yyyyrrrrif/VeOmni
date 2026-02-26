@@ -81,6 +81,29 @@ def _compute_flux_seqlens(micro_batch: Dict[str, "torch.Tensor"]) -> Tuple[List[
     return [seqlens]
 
 
+def _compute_qwen_image_seqlens(micro_batch: Dict[str, "torch.Tensor"]) -> List[int]:
+    """
+    Computes the sequence lengths for qwen_image model.
+
+    For qwen_image, latents have shape [C, H, W] or [B, C, H, W].
+    The sequence length after patchification is (H // patch_size) * (W // patch_size).
+    We use patch_size=2 as the default.
+
+    Args:
+        micro_batch (Dict[str, Tensor]): The current batch containing 'latents'.
+    """
+    latents = micro_batch["image"]
+    if len(latents.shape) == 4:
+        B = latents.shape[0]
+        C, H, W = latents.shape[-3:]
+    else:
+        B = 1
+        C, H, W = latents.shape[-3:]
+    patch_size = 2
+    seqlens = B * (H // patch_size) * (W // patch_size)
+    return [seqlens]
+
+
 class EnvironMeter(OriginalEnvironMeter):
     """
     Computes the metrics about the training efficiency.
@@ -104,6 +127,8 @@ class EnvironMeter(OriginalEnvironMeter):
             seqlens = _compute_wan_seqlens(micro_batch, self.rmpad, self.rmpad_with_pos_ids)
         elif model_type == "flux":
             seqlens = _compute_flux_seqlens(micro_batch)
+        elif model_type == "qwen_image":
+            seqlens = _compute_qwen_image_seqlens(micro_batch)
         else:
             raise ValueError(f"model_type {model_type} not supported")
 

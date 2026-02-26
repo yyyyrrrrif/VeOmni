@@ -1,0 +1,17 @@
+{
+  "architectures": "QwenImageModel",
+  "_class_name": "QwenImageModel",
+  "model_type": "qwen_image",
+  "image_size": 512,
+  "patch_size": 2,
+  "in_channels": 64,
+  "out_channels": 16,
+  "hidden_size": 1152,
+  "num_hidden_layers": 60,
+  "num_attention_heads": 24,
+  "intermediate_size": 4304,
+  "text_embed_dim": 3584,
+  "text_max_length": 512,
+  "axes_dims_rope": [16, 56, 56],
+  "tie_word_embeddings": false
+}

@@ -1,0 +1,53 @@
+model:
+  model_path: null
+  config_path: ./configs/model_configs/qwen_image/qwen_image.json
+  attn_implementation: flash_attention_2
+
+data:
+  train_path: QwenImageMini
+  train_size: 1000000000000
+  dataloader_type: native
+  datasets_type: iterable
+  data_type: diffusion
+  max_seq_len: 8192
+  drop_last: true
+  text_keys: text
+
+train:
+  output_dir: qwen_image_sft
+  train_architecture: full
+  data_parallel_mode: fsdp1
+  data_parallel_replicate_size: 1
+  ulysses_parallel_size: 4
+  global_batch_size: 8
+  micro_batch_size: 1
+  rmpad: false
+  rmpad_with_pos_ids: false
+  optimizer: adamw
+  lr: 1.0e-4
+  lr_warmup_ratio: 0.007
+  lr_decay_style: constant
+  lr_decay_ratio: 1.0
+  weight_decay: 0.01
+  max_grad_norm: 1.0
+  enable_mixed_precision: false
+  enable_gradient_checkpointing: true
+  enable_full_shard: true
+  enable_fsdp_offload: false
+  enable_activation_offload: false
+  init_device: cuda
+  enable_full_determinism: false
+  empty_cache_steps: 500
+  ckpt_manager: dcp
+  load_checkpoint_path: ""
+  max_steps: 500
+  save_epochs: 20
+  num_train_epochs: 100
+  save_hf_weights: true
+  use_wandb: false
+  wandb_project: QwenImage-SFT
+  wandb_name: sft_qwen_image
+  ops_to_save:
+    - torch.ops.flash_attn._flash_attn_forward.default
+    - aten._scaled_dot_product_flash_attention.default
+    - torch.ops.flash_attn_3.fwd.default

@@ -12,43 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from . import (
-    deepseek_v3,
-    flux,
-    janus,
-    llama,
-    movqgan,
-    qwen2,
-    qwen2_5_omni,
-    qwen2_5vl,
-    qwen2_vl,
-    qwen3,
-    qwen3_moe,
-    qwen3_omni_moe,
-    qwen3_vl,
-    qwen3_vl_moe,
-    qwen_image,
-    seed_oss,
-    wan,
-)
+from ...loader import MODEL_CONFIG_REGISTRY, MODELING_REGISTRY
 
 
-__all__ = [
-    "deepseek_v3",
-    "flux",
-    "janus",
-    "llama",
-    "movqgan",
-    "qwen2",
-    "qwen2_5_omni",
-    "qwen2_5vl",
-    "qwen2_vl",
-    "qwen3",
-    "qwen3_moe",
-    "qwen3_omni_moe",
-    "qwen_image",
-    "seed_oss",
-    "wan",
-    "qwen3_vl",
-    "qwen3_vl_moe",
-]
+@MODEL_CONFIG_REGISTRY.register("qwen_image")
+def register_qwen_image_config():
+    from .config_qwen_image import QwenImageConfig
+
+    return QwenImageConfig
+
+
+@MODELING_REGISTRY.register("qwen_image")
+def register_qwen_image_modeling(architecture: str):
+    from .modeling_qwen_image import QwenImageModel
+
+    return QwenImageModel
